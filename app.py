@@ -1,4 +1,5 @@
 import streamlit as st
+import os
 import json
 from evaluator import Evaluator
 
@@ -47,3 +48,28 @@ if chat_file and context_file:
 
     except Exception as e:
         st.error(f"Error while processing files: {e}")
+
+st.sidebar.title("📥 Sample Input Files")
+
+SAMPLE_DIR = "sample_files"
+
+if os.path.exists(SAMPLE_DIR):
+    sample_files = os.listdir(SAMPLE_DIR)
+
+    if sample_files:
+        st.sidebar.markdown("Download a sample JSON file:")
+
+        for file_name in sample_files:
+            file_path = os.path.join(SAMPLE_DIR, file_name)
+
+            with open(file_path, "rb") as f:
+                st.sidebar.download_button(
+                    label=f"⬇️ {file_name}",
+                    data=f,
+                    file_name=file_name,
+                    mime="application/json"
+                )
+    else:
+        st.sidebar.info("No sample files available.")
+else:
+    st.sidebar.warning("Sample files folder not found.")
